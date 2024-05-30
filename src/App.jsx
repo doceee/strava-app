@@ -1,22 +1,24 @@
-import { useEffect, useState } from 'preact/hooks';
-import stravaApiCall from '../utils/stravaApiCall';
-import formatDate from '../utils/transformDate';
-import './style.css';
+import { useActivities } from './helpers'
+import { ActivityItem } from './ActivityItem'
 
 const App = () => {
-  const [activity, setActivity] = useState(undefined);
-  useEffect(async () => {
-    setActivity(await stravaApiCall());
-  }, []);
+    const activities = useActivities()
 
-  return (
-    <main>
-      {activity !== undefined && (
-        <>
-          <h3>Last activity {formatDate(activity.start_date)}</h3>
-        </>
-      )}
-    </main>
-  );
-};
-export default App;
+    return (
+        <main>
+            <table>
+                <tr>
+                    <th>Type</th>
+                    <th onClick={() => sort('elapsed_time')}>Elapsed Time</th>
+                    <th>Distance</th>
+                    <th onClick={() => sort('start_date')}>Date</th>
+                </tr>
+                {activities.map((activity, idx) => (
+                    <ActivityItem activity={activity} idx={idx} />
+                ))}
+            </table>
+        </main>
+    )
+}
+
+export default App
